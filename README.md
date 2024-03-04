@@ -18,6 +18,11 @@ make clean a9 run-a9
 *it is also possible to build for i686, rpi4 and leon3*
 
 ## Output
+Both zed and beagle failed on relocatable, but the output is different.
+
+### QEMU xilinx-zynq-a9
+Same behaviour on Zedboard
+
 Loading obj0.o and obj1.o (obj1 messages shall be lowercase)
 ```
 1: rtl sym
@@ -53,4 +58,42 @@ ONE MORE MESSAGE TO TEST OBJ0!
 this message is from: obj1
 ANOTHER MSG: 0
 ONE MORE MESSAGE TO TEST OBJ0!
+```
+
+### BeagleBone Black
+Loading obj0.o and obj1.o (obj1 messages shall be lowercase)
+```
+1: rtl sym
+/mnt/obj0.o
+    obj0 = 0x80539c60
+/mnt/obj1.o
+    obj1 = 0x8053a0b8
+2: rtl call obj0
+[obj0]
+THIS MESSAGE IS FROM: obj0
+ANOTHER MSG: 0
+ONE MORE MESSAGE TO TEST OBJ0!
+3: rtl call obj1
+[obj1]
+this message is from: obj1
+another msg: 1
+one more message to test obj1!
+```
+
+Loading the relocatable object.
+```
+1: rtl sym
+/mnt/relocatable.obj
+    obj0 = 0x80539d28
+    obj1 = 0x80539d80
+2: rtl call obj0
+[obj0]
+THIS MESSAGE IS FROM: obj0
+ANOTHER MSG: 0
+one more message to test obj1!
+3: rtl call obj1
+[obj1]
+THIS MESSAGE IS FROM: obj1
+ANOTHER MSG: 0
+one more message to test obj1!
 ```
