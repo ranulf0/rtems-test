@@ -18,6 +18,16 @@ a9: SPECFLAGS=-B$(RTEMSPREFIX)/arm-rtems6/xilinx_zynq_a9_qemu/lib -qrtems
 a9: BSPFLAGS=-march=armv7-a -mthumb -mfpu=neon -mfloat-abi=hard -mtune=cortex-a9
 a9: LINKCMDS = $(RTEMSPREFIX)/arm-rtems6/xilinx_zynq_a9_qemu/lib/linkcmds
 
+zed: CC=arm-rtems6-gcc
+zed: LD=arm-rtems6-ld
+zed: AR=arm-rtems6-ar
+zed: RL=arm-rtems6-ranlib
+zed: SIZE=arm-rtems6-size
+zed: OBJCOPY=arm-rtems6-objcopy
+zed: SPECFLAGS=-B$(RTEMSPREFIX)/arm-rtems6/xilinx_zynq_zedboard/lib -qrtems
+zed: BSPFLAGS=-march=armv7-a -mthumb -mfpu=neon -mfloat-abi=hard -mtune=cortex-a9
+zed: LINKCMDS = $(RTEMSPREFIX)/arm-rtems6/xilinx_zynq_zedboard/lib/linkcmds
+
 beagle: CC=arm-rtems6-gcc
 beagle: LD=arm-rtems6-ld
 beagle: AR=arm-rtems6-ar
@@ -59,7 +69,7 @@ rpi4: SPECFLAGS=-B$(RTEMSPREFIX)/aarch64-rtems6/raspberrypi4b/lib -qrtems
 rpi4: BSPFLAGS=-mcpu=cortex-a72 -march=armv8-a
 rpi4: LINKCMDS = $(RTEMSPREFIX)/aarch64-rtems6/raspberrypi4b/lib/linkcmds
 
-a9 i686 leon3 rpi4 beagle: all
+a9 i686 leon3 rpi4 beagle zed: all
 
 all: dir exe
 
@@ -85,8 +95,8 @@ exe: $(OBJS) lib tar
 	$(CC) $(SPECFLAGS) $(BSPFLAGS) $(RELLOCADDR) -o $(EXE) $(INIT) $(INIT)-dl-sym.o $(OBJDIR)/$(TARFILE) $(LINKLIBRARIES)
 	$(OBJCOPY) -O binary --strip-all $(EXE) $(EXE).bin
 	$(SIZE) $(EXE)
-#gzip -9 $(EXE).bin
-#mkimage -A arm -O rtems -T kernel -a 0x00104000 -e 0x00104000 -n RTEMS -d $(EXE).bin.gz build/init.img
+	#gzip -9 $(EXE).bin
+	#mkimage -A arm -O rtems -T kernel -a 0x80000000 -e 0x80000000 -n RTEMS -d $(EXE).bin.gz build/init.img
 
 run-a9:
 	qemu-system-arm -M xilinx-zynq-a9 -m 256M \
